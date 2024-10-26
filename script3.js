@@ -1,24 +1,23 @@
 const audioPlayer = document.getElementById('audioPlayer');
 const lyrics = document.querySelectorAll('#lyricsContainer p');
 
-audioPlayer.addEventListener('timeupdate', () => {
+let lastLineIndex = -1; // Индекс последней активной строки
+
+setInterval(() => {
   const currentTime = audioPlayer.currentTime;
 
-  lyrics.forEach((line) => {
+  lyrics.forEach((line, index) => {
     const lineTime = parseFloat(line.getAttribute('data-time'));
 
-    if (currentTime >= lineTime) {
+    if (currentTime >= lineTime && lastLineIndex !== index) {
       line.classList.add('active');
-    } else {
-      line.classList.remove('active');
+      if (lastLineIndex !== -1) {
+        lyrics[lastLineIndex].classList.remove('active'); // Удаляем класс у предыдущей строки
+      }
+      lastLineIndex = index; // Обновляем индекс
     }
   });
-
-  // Остановка плеера, когда песня заканчивается
-  if (currentTime >= audioPlayer.duration) {
-    audioPlayer.pause(); // Останавливает плеер
-  }
-});
+}, 100); // Проверяем каждую 100 мс
   
     audioPlayer.addEventListener('timeupdate', updateLyrics);
   });
