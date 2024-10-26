@@ -1,24 +1,20 @@
 const audioPlayer = document.getElementById('audioPlayer');
 const lyrics = document.querySelectorAll('#lyricsContainer p');
-
-let lastLineIndex = -1; // Индекс последней активной строки
+let currentLineIndex = 0; // Индекс текущей строки
 
 setInterval(() => {
   const currentTime = audioPlayer.currentTime;
 
-  lyrics.forEach((line, index) => {
-    const lineTime = parseFloat(line.getAttribute('data-time'));
-
-    if (currentTime >= lineTime && lastLineIndex !== index) {
-      line.classList.add('active');
-      if (lastLineIndex !== -1) {
-        lyrics[lastLineIndex].classList.remove('active'); // Удаляем класс у предыдущей строки
-      }
-      lastLineIndex = index; // Обновляем индекс
+  // Проверяем, если текущая строка еще не отображается и время прошло
+  if (currentLineIndex < lyrics.length) {
+    const lineTime = parseFloat(lyrics[currentLineIndex].getAttribute('data-time'));
+    
+    if (currentTime >= lineTime) {
+      lyrics[currentLineIndex].classList.add('active'); // Показываем строку
+      currentLineIndex++; // Переходим к следующей строке
     }
-  });
-}, 100); // Проверяем каждую 100 мс
-  
+  }
+}, 100); // Проверяем каждые 100 мс
     audioPlayer.addEventListener('timeupdate', updateLyrics);
   });
 
